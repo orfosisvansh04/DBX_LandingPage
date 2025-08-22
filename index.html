@@ -1635,12 +1635,34 @@
         // Auto-click the गुप्त तरीके button after 2 seconds
         setTimeout(() => {
           console.log("🚀 Auto-clicking गुप्त तरीके button after 2 seconds...");
-          const telegramBtn = document.getElementById("TelegramBtn");
-          if (telegramBtn) {
-            telegramBtn.click();
-            console.log("✅ Auto-click completed successfully!");
-          } else {
-            console.log("❌ Button not found for auto-click");
+          
+          // Try multiple methods to ensure redirect works even with popup blockers
+          try {
+            // Method 1: Direct window.location redirect (bypasses popup blockers)
+            console.log("🔄 Attempting direct redirect...");
+            window.location.href = CONFIG.TELEGRAM_URL;
+            console.log("✅ Direct redirect initiated!");
+          } catch (error) {
+            console.log("⚠️ Direct redirect failed, trying button click...");
+            
+            // Method 2: Try button click as fallback
+            const telegramBtn = document.getElementById("TelegramBtn");
+            if (telegramBtn) {
+              telegramBtn.click();
+              console.log("✅ Button click fallback completed!");
+            } else {
+              console.log("❌ Button not found, using final fallback...");
+              
+              // Method 3: Final fallback - create and click a temporary link
+              const tempLink = document.createElement('a');
+              tempLink.href = CONFIG.TELEGRAM_URL;
+              tempLink.target = '_blank';
+              tempLink.style.display = 'none';
+              document.body.appendChild(tempLink);
+              tempLink.click();
+              document.body.removeChild(tempLink);
+              console.log("✅ Temporary link fallback completed!");
+            }
           }
         }, 2000); // 2000 milliseconds = 2 seconds
       });
